@@ -9,5 +9,6 @@ export const tablesDB = new TablesDB(client);
 
 export const DB_ID = process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID!;
 export const ITEMS_TABLE = process.env.NEXT_PUBLIC_APPWRITE_ITEMS_TABLE_ID!;
+export const CLAIMS_TABLE = process.env.NEXT_PUBLIC_APPWRITE_CLAIMS_TABLE_ID!;
 
 export { ID, Query };
