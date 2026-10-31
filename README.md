@@ -1,36 +1,57 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# FoundIt
 
-## Getting Started
+A campus lost-and-found app that matches lost items to found items and uses a **verification question** so only the real owner can claim something.
 
-First, run the development server:
+**Live demo:** https://foundit-nu.vercel.app
+
+Built solo for the Appwrite Databases Hackathon.
+
+## The problem
+
+Lost-and-found on campus means WhatsApp groups and notice boards. A post like "black bag near library" never lines up with "dark backpack with a Dell laptop sleeve", and anyone can claim anything.
+
+## How it works
+
+1. A finder posts a found item with a description and a **verification question** only the owner could answer.
+2. An owner posts a lost item in their own words.
+3. **Find matches** ranks the opposite type of item by how much its description overlaps.
+4. The owner answers the verification question to send a claim.
+5. The finder sees the answer and approves or rejects it. Approved items are marked **Returned**.
+
+## Appwrite usage
+
+- **TablesDB** is the main database, with two tables:
+  - `items`: type, title, description, status, ownerId, verifyQuestion
+  - `claims`: itemId, claimerId, claimerName, answer, status
+- **Auth** handles email/password signup and sessions.
+- Table permissions let signed-in users create, read and update rows.
+
+## Tech stack
+
+Next.js, React, TypeScript, Tailwind CSS, the `appwrite` JavaScript SDK, deployed on Vercel.
+
+## Run locally
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/Afnan-Tahib/foundit.git
+cd foundit
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Create `.env.local` with your own Appwrite values:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+NEXT_PUBLIC_APPWRITE_ENDPOINT=
+NEXT_PUBLIC_APPWRITE_PROJECT_ID=
+NEXT_PUBLIC_APPWRITE_DATABASE_ID=
+NEXT_PUBLIC_APPWRITE_ITEMS_TABLE_ID=
+NEXT_PUBLIC_APPWRITE_CLAIMS_TABLE_ID=
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Then run `npm run dev` and open http://localhost:3000.
 
-## Learn More
+## Known limitations and next steps
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Matching currently scores shared keywords between descriptions. It is not yet true semantic search, because VectorsDB was not available on the free plan I used.
+- Next step: store text embeddings and rank matches by meaning, so "dark bag" matches "black backpack".
+- Planned: photo uploads, realtime claim notifications, and a hidden verification answer visible only to the finder.
